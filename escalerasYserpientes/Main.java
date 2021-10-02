@@ -19,6 +19,7 @@ public class Main {
 		//        });
 		
 		GUI logic = new GUI();
-
+//
+//		System.out.print(logic.turns(1));
 	}
 }

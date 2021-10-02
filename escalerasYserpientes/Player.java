@@ -4,27 +4,37 @@ public class Player implements Runnable{
 
 	private int position ;
 	private int turn;
-	private Dice dice;
-	private Logic logic;
-	private boolean isHuman;
+	private Controller logic;
 	public final Thread THREAD =new Thread(this);
 	
-	public Player(int turn, Dice dice, Boolean isHuman, Logic logic) {
-		this.isHuman = isHuman;
+	public Player(int turn, Controller logic) {
+	
 		this.position = 0;
 		this.turn =  turn;
-		this.dice = dice;
 		this.logic = logic;
 	}
 	
-	public boolean isHuman() {
-		return isHuman;
-	}
 
 	public void run() {
-		
-		logic.movePlayer(this);
-		
+
+		while(logic.turns(this.getTurn()) != 0) {
+			int numToMove = logic.turns(this.getTurn());
+			this.changePosition(numToMove); 
+			
+			this.changePosition(Controller.board[this.getPosition()]);
+
+			try {
+				this.THREAD.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if(this.getPosition() == 99) {
+				return;
+			}
+		}
+
 	}
 	
 	public int getTurn() {

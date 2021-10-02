@@ -15,13 +15,13 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 
 
-public class Board extends JPanel {
+public class Board extends JPanel implements Runnable {
 	
-
+	private Thread thread = new Thread(this);
 	private ImageIcon player1;
 	private ImageIcon player2; 
 	private ImageIcon player3;
-	private Logic logic;
+	private Controller logic;
 	private Image image;
 	private JLabel[] panelHolder = new JLabel[100];
 
@@ -29,11 +29,11 @@ public class Board extends JPanel {
 	public Board() {
 		this.setLayout(new GridLayout(10, 10));
 		this.image = new ImageIcon( getClass().getResource( "/images/serpientes_y_escaleras.jpg") ).getImage();
-		this.logic = new Logic();
-		this.player1 = new ImageIcon("src/images/"+ logic.getPlayer1().getTurn() +".png");
+		this.logic = new Controller();
+		this.player1 = new ImageIcon("src/images/1.png");
 		this.player2 = new ImageIcon("src/images/"+ logic.getPlayer2().getTurn() +".png"); 
-		this.player3 = new ImageIcon("src/images/"+ logic.getPlayer3().getTurn() +".png");
 		
+		this.player3 = new ImageIcon("src/images/"+ logic.getPlayer3().getTurn() +".png");
 		
 		
 		for(int m = 0; m < 100; m++) {
@@ -41,24 +41,20 @@ public class Board extends JPanel {
 				add(panelHolder[m]); 
 			 
 		}
-		this.ja();
-		
+//		this.movePlayers();
+		initBoard();
 	}
+
+	public void initBoard(){
+		if(logic.getPlayerInit()){
+			thread.start();
+		}
+		else{
+
+		}
+	}
+
 	
-	public Logic getLogic(){
-		return logic;
-	}
-
-	public void ja() {
-		logic.movePlayer(logic.getPlayer1());
-		logic.movePlayer(logic.getPlayer2());
-		logic.movePlayer(logic.getPlayer3());
-
-	}
-	 
-	public JLabel[] getPanelHolder() {
-		return panelHolder;
-	}
 
 	public Dimension getPreferredSize() { 
       if (image != null) {
@@ -97,13 +93,35 @@ public class Board extends JPanel {
 			panelHolder[m] = new JLabel();
 			add(panelHolder[m] );
 		}
-		this.panelHolder[this.indexConverter(logic.getPlayer1().getPosition())].setIcon(player1);
+		this.panelHolder[this.indexConverter(logic.getHumanPosition())].setIcon(player1);
 		this.panelHolder[this.indexConverter(logic.getPlayer2().getPosition())].setIcon(player2);
 		this.panelHolder[this.indexConverter(logic.getPlayer3().getPosition())].setIcon(player3);
 	  	
 	}
+	public Controller getLogic(){
+		return logic;
+	}
+
+//	public void movePlayers() {
+//		logic.movePlayer(logic.getPlayer1());
+//		logic.movePlayer(logic.getPlayer2());
+//		logic.movePlayer(logic.getPlayer3());
+//
+//	}
+	 
+	public JLabel[] getPanelHolder() {
+		return panelHolder;
+	}
 	public void clearBoard() {
 		
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		while(true){
+			updatePlayers();
+		}
 	}
 	
 	
